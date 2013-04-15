@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>  
+
+  <Resource name="jdbc/wsbdd" 
+            auth="Container" 
+            type="javax.sql.DataSource" 
+            maxActive="100" 
+            maxIdl="30" 
+            maxWait ="10000"
+            username="adminLKTTLIG"
+            password="inpJbCVt5WF3"
+            driverClassName="org.sqlite.JDBC"
+            url="jdbc:mysql://wsbdd-projetcdai.rhcloud.com.db"/>
+            
+</Context>
