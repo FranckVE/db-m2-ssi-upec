@@ -42,7 +42,7 @@ public class Connexionbdd extends HttpServlet {
 		 pw.write("Hello tout le monde !!") ;
 		try {
 			InitialContext ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/projet_banque");
+			DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/wsbdd");
 
 			conn = ds.getConnection();
 

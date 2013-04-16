@@ -1,56 +1,45 @@
 package Gestionnaire;
 
 import java.io.IOException;
+
 import java.io.PrintWriter;
-import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Helloworld
+ * Servlet implementation class ConnexionIP
  */
-public class Helloworldbdd extends HttpServlet {
+public class ConnexionIP extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Helloworldbdd() {
+    public ConnexionIP() {
         super();
         // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see Servlet#init(ServletConfig)
-	 */
-	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
-	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String host = System.getenv("OPENSHIFT_MYSQL_DB_HOST");
-		String port = System.getenv("OPENSHIFT_MYSQL_DB_PORT");
-		String url = String.format("jdbc:mysql://%s:%s/wsbdd", host, port);
-		
-	      PrintWriter pw = response.getWriter() ;
+		 PrintWriter pw = response.getWriter() ;
 	      pw.write("Hello tout le monde !!") ;
 	      
 	      try {
 				Class.forName("com.mysql.jdbc.Driver");			
-			//	Connection Connexion = DriverManager.getConnection("jdbc:mysql://System.getenv(OPENSHIFT_MYSQL_DB_HOST):System.getenv(OPENSHIFT_MYSQL_DB_HOST)/wsbdd","adminRf3g7If","RPGjUx1GUsiX");
+			    Connection Connexion = DriverManager.getConnection("jdbc:mysql://127.9.182.1:3306/wsbdd","adminRf3g7If","RPGjUx1GUsiX");
 			//	Connection Connexion = DriverManager.getConnection("jdbc:mysql://localhost/projet_banque","root","riyaad");
-				Connection Connexion = DriverManager.getConnection(url,"adminRf3g7If","RPGjUx1GUsiX");
 				Statement State = Connexion.createStatement();
 				ResultSet resultat = State.executeQuery("SELECT nom,prenom FROM credentials");
 				while (resultat.next()) {
@@ -68,7 +57,6 @@ public class Helloworldbdd extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response) ;
 	}
 
 }
