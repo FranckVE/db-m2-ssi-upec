@@ -20,11 +20,21 @@
     <url-pattern>/Helloworld</url-pattern>
   </servlet-mapping>
   <resource-ref>
-		<description>
+    <description>
 			Base de donnees
 		</description>
-		<res-ref-name>jdbc/wsbdd</res-ref-name>
-		<res-type>javax.sql.DataSource</res-type>
-		<res-auth>Container</res-auth>
-	</resource-ref> 
+    <res-ref-name>jdbc/projet_banque</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+  <servlet>
+    <description></description>
+    <display-name>Connexionbdd</display-name>
+    <servlet-name>Connexionbdd</servlet-name>
+    <servlet-class>Gestionnaire.Connexionbdd</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Connexionbdd</servlet-name>
+    <url-pattern>/Connexionbdd</url-pattern>
+  </servlet-mapping>
 </web-app>

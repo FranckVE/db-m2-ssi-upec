@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>  
 
-  <Resource name="jdbc/wsbdd" 
+  <Resource name="jdbc/projet_banque" 
             auth="Container" 
             type="javax.sql.DataSource" 
             maxActive="100" 
             maxIdl="30" 
             maxWait ="10000"
-            username="adminLKTTLIG"
-            password="inpJbCVt5WF3"
-            driverClassName="org.sqlite.JDBC"
-            url="jdbc:mysql://wsbdd-projetcdai.rhcloud.com.db"/>
+            username="root"
+            password="riyaad"
+            driverClassName="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://localhost/projet_banque"/>
             
 </Context>
