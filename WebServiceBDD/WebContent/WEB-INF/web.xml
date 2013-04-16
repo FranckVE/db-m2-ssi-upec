@@ -10,6 +10,19 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
+    <servlet-name>Jersey REST web service Service</servlet-name>
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>Gestionnaire</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Jersey REST web service Service</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <description></description>
     <display-name>Helloworldbdd</display-name>
     <servlet-name>Helloworldbdd</servlet-name>
@@ -46,5 +59,15 @@
   <servlet-mapping>
     <servlet-name>ConnexionIP</servlet-name>
     <url-pattern>/ConnexionIP</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>echolocal</display-name>
+    <servlet-name>echolocal</servlet-name>
+    <servlet-class>Gestionnaire.echolocal</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>echolocal</servlet-name>
+    <url-pattern>/echolocal</url-pattern>
   </servlet-mapping>
 </web-app>
