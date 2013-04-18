@@ -2,8 +2,13 @@ package Gestionnaire;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
 import java.sql.*;
 
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+
+import javax.crypto.SecretKey;
 import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -12,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
+import sun.misc.BASE64Decoder;
 
 /**
  * Servlet implementation class Verify
@@ -33,9 +40,12 @@ public class Engine {
 		}
 	}
 
-	public String verif_banque(String nom_banque, String hash) {
-		String cle_pub = null;
+	public RSAPublicKey verif_banque(String nom_banque, String hash) {
+		RSAPublicKey cle_pub = null;
 		String id_banque = null;
+		boolean verify = false;
+		byte[] modulus = null;
+		byte[] exponent = null;
 
 		String query = "SELECT * FROM banques WHERE nom ='" + nom_banque + "'";
 		try {
@@ -44,7 +54,9 @@ public class Engine {
 			boolean passe = false;
 			// we wait for one answer
 			while (resultat.next()) {
-				cle_pub = resultat.getString("pubKey");
+				BASE64Decoder decoder = new BASE64Decoder();
+				modulus =decoder.decodeBuffer(resultat.getString("pubModulus"));
+				exponent = decoder.decodeBuffer(resultat.getString("pubExponent"));
 				id_banque = resultat.getString("id");
 				passe = true;
 			}
@@ -53,12 +65,36 @@ public class Engine {
 		} catch (Exception e) {
 			return null;
 		}
-
+		
 		// faire verification du hash avec id_banque
-
-		return cle_pub;
+		cle_pub = CryptoUtils.getRSAPubKey(exponent, modulus);
+		verify = CryptoUtils.verify(id_banque, hash, cle_pub);
+		
+		if (verify) {
+			return cle_pub;
+		} else {
+			return null;
+		}
 	}
 
-	// genere cle de seesion
+	// genere cle de session
+	public byte[] sessionKeyGenerator(){
+		
+		SecretKey sessionKey = CryptoUtils.initAES128();
+		return sessionKey.getEncoded();
+		
+	}
+	
+	public String packetGenerator(SecretKey sessionKey, RSAPublicKey pubKey){
+		
+		String packet = null;
+		ByteBuffer bb = ByteBuffer.allocate(8);
+		byte[] time = new byte[8];
+		bb.putLong(System.currentTimeMillis()).get(time, 0, 8);
+		
+		
+		return packet;
+	}
+	
 
 }

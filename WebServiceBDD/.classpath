@@ -14,5 +14,8 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="C:/Users/hairsoo/Downloads/bcprov-jdk15on-148.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hairsoo/cours M2/CDAI/google-gson-2.2.3/gson-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hairsoo/cours M2/CDAI/google-gson-2.2.3/gson-2.2.3-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hairsoo/cours M2/CDAI/google-gson-2.2.3/gson-2.2.3-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

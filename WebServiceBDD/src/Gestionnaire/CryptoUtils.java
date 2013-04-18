@@ -52,10 +52,6 @@ static SecretKey secretKey ;
 
 
 
-
-
-
-
 public boolean fileExists ( String path){
 	
 	
@@ -199,7 +195,7 @@ public static String digest( String message ){
 	
 }
 
-//cette méthode permet de comparer deux strings, elle nous servireapour comparer les données données par l'utilisateur avec celles stockées dans la base de données
+//cette méthode permet de comparer deux strings, elle nous servira pour comparer les données données par l'utilisateur avec celles stockées dans la base de données
 public static boolean compare ( String message1 , String message2 ){
 	
 	if( message1.compareTo(message2) == 0 ){
@@ -523,7 +519,7 @@ public static byte [][] deconcat (String s) {
 
 /********************* generateDESSecretKey ****************/
 
-private SecretKey generateAESSecretKey(int keySize) {
+public static SecretKey generateAESSecretKey(int keySize) {
         SecretKey key=null;
     
     try {
@@ -540,7 +536,7 @@ private SecretKey generateAESSecretKey(int keySize) {
 
 /******************** initAESKey()   *****************/
 
-public SecretKey initAES128(){
+public static SecretKey initAES128(){
 	
 	
 	return generateAESSecretKey(128);

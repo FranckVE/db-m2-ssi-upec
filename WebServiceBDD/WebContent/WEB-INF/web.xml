@@ -82,12 +82,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>Verify</display-name>
-    <servlet-name>Verify</servlet-name>
-    <servlet-class>Gestionnaire.Verify</servlet-class>
+    <display-name>BanqueBdd</display-name>
+    <servlet-name>BanqueBdd</servlet-name>
+    <servlet-class>test.BanqueBdd</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Verify</servlet-name>
-    <url-pattern>/Verify</url-pattern>
+    <servlet-name>BanqueBdd</servlet-name>
+    <url-pattern>/BanqueBdd</url-pattern>
   </servlet-mapping>
 </web-app>
