@@ -10,7 +10,6 @@ import java.security.interfaces.RSAPublicKey;
 
 import javax.crypto.SecretKey;
 
-
 import sun.misc.BASE64Decoder;
 
 /**
@@ -27,7 +26,8 @@ public class Engine {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection Connexion = DriverManager.getConnection(url,"adminRf3g7If","RPGjUx1GUsiX");
+			Connection Connexion = DriverManager.getConnection(url,
+					"adminRf3g7If", "RPGjUx1GUsiX");
 			state = Connexion.createStatement();
 		} catch (SQLException | ClassNotFoundException e1) {
 		}
@@ -36,9 +36,7 @@ public class Engine {
 	public RSAPublicKey verifBanque(String nom_banque, String hash) {
 		RSAPublicKey cle_pub = null;
 		String id_banque = null;
-		boolean verify = false;
-		byte[] modulus = null;
-		byte[] exponent = null;
+		PublicKey pubKey = null;
 
 		String query = "SELECT * FROM banques WHERE nom ='" + nom_banque + "'";
 		try {
@@ -48,8 +46,7 @@ public class Engine {
 			// we wait for one answer
 			while (resultat.next()) {
 				BASE64Decoder decoder = new BASE64Decoder();
-				modulus = decoder.decodeBuffer(resultat.getString("pubModulus"));
-				exponent = decoder.decodeBuffer(resultat.getString("pubExponent"));
+				pubKey = this.getPublicKeyBase64(resultat.getString("pubKey"));
 				id_banque = resultat.getString("id");
 				passe = true;
 			}
@@ -58,52 +55,80 @@ public class Engine {
 		} catch (Exception e) {
 			return null;
 		}
-
-		// faire verification du hash avec id_banque
-		cle_pub = CryptoUtils.getRSAPubKey(exponent, modulus);
-		verify = CryptoUtils.verify(id_banque, hash, cle_pub);
-
-		if (verify) return cle_pub;
+		
+		// Vérification du ID et de son hash
+		if (CryptoUtils.verify(mdp, hash, pubKey))
+			return cle_pub;
 		return null;
 	}
-	
+
 	public String verifUser(String login, String mdp, String hash) {
 		String result = "OK";
-		boolean verify = false;
-		byte[] pubKey = null;
+		PublicKey pubKey = null;
 
 		// Premier test de login / mdp
-		String query = "SELECT * FROM credentials WHERE login ='" + login + "' and mdp ='" + mdp +"'";
-		
+		String query = "SELECT * FROM credentials WHERE login ='" + login
+				+ "' and mdp ='" + mdp + "'";
+
 		try {
 			ResultSet resultat = state.executeQuery(query);
 			boolean passe = false;
 
 			while (resultat.next()) {
-				BASE64Decoder decoder = new BASE64Decoder();
-				pubKey = decoder.decodeBuffer(resultat.getString("pubKey"));
+				pubKey = this.getPublicKeyBase64(resultat.getString("pubKey"));
 				passe = true;
 			}
-			if (!passe) return "REJECT";
+			if (!passe)
+				return "REJECT";
 		} catch (Exception e) {
 			return "REJECT";
 		}
 
-		// TODO VERIFY du mdp et son hash avec la pubKey recup !!7
-		
-		//cle_pub = CryptoUtils.getRSAPubKey(exponent, modulus);
-		//verify = CryptoUtils.verify(id_banque, hash, cle_pub);
-
-		if (verify) return "OK";
-		return "REJECT";
+		// Vérification du ID et de son hash
+		if (CryptoUtils.verify(mdp, hash, pubKey))
+			return cle_pub;
+		return null;
 	}
 
 	// genere cle de session
 	public byte[] sessionKeyGenerator() {
-		
+
 		SecretKey sessionKey = CryptoUtils.initAES128();
 		return sessionKey.getEncoded();
 	}
+	
+	// ******************************************************************************
+
+	public static PublicKey getPublicKeyBase64(String keyBase64) {
+
+		byte[] keyEncoded = Base64.decode(keyBase64.getBytes());
+		return getPublicKey1(keyEncoded);
+	}
+
+	private static PublicKey getPublicKey1(byte[] key) {
+		// return getRSAPubKeyEncoded(key);
+		return getPublicKeyEncoded(key);
+	}
+
+	private static PublicKey getPublicKeyEncoded(byte[] publicKeyData) {
+
+		PublicKey pk = null;
+		try {
+			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
+					publicKeyData);
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
+			pk = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+
+			return pk;
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException
+				| NoSuchProviderException ex) {
+			Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return pk;
+	}
+	
+	// ******************************************************************************
 
 	public String packetGenerator(SecretKey sessionKey, RSAPublicKey pubKey) {
 

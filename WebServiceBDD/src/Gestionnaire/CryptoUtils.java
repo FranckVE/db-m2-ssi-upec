@@ -272,7 +272,7 @@ public static byte []  sign2 (String challenge , RSAPrivateKey privKey){
 
 
 //Cette méthode prend en paramètres un challenge et sa signature et vérifie l'authenticité de cett dernière
-public static boolean verify ( String challenge, String signature , RSAPublicKey pubKey){
+public static boolean verify ( String challenge, String signature , PublicKey pubKey){
 
  
     Signature myVerifySign;
@@ -314,7 +314,7 @@ public static boolean verify ( String challenge, String signature , RSAPublicKey
 }
 
 //Cette méthode prend en paramètres un challenge et sa signature et vérifie l'authenticité de cett dernière
-public static boolean verify ( String challenge, byte []  signature , RSAPublicKey pubKey){
+public static boolean verify ( String challenge, byte []  signature , PublicKey pubKey){
 	
 	
 
