@@ -5,10 +5,19 @@ import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.sql.*;
 
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+import java.security.Security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.SecretKey;
+
+import org.bouncycastle.util.encoders.Base64;
 
 import sun.misc.BASE64Decoder;
 
@@ -57,7 +66,7 @@ public class Engine {
 		}
 		
 		// Vérification du ID et de son hash
-		if (CryptoUtils.verify(mdp, hash, pubKey))
+		if (CryptoUtils.verify(id_banque, hash, pubKey))
 			return cle_pub;
 		return null;
 	}
@@ -86,8 +95,8 @@ public class Engine {
 
 		// Vérification du ID et de son hash
 		if (CryptoUtils.verify(mdp, hash, pubKey))
-			return cle_pub;
-		return null;
+			return "OK";
+		return "REJECT";
 	}
 
 	// genere cle de session
@@ -123,7 +132,7 @@ public class Engine {
 			return pk;
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException
 				| NoSuchProviderException ex) {
-			Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
+			//Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return pk;
 	}

@@ -13,7 +13,7 @@ public class BanqueBdd {
 
 	}
 
-	/**
+	/** 
 	 * Fonction récupérant dans la BdD tous les comptes d'une personne
 	 * log Login de la personne concernée
 	 */
