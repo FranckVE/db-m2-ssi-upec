@@ -70,4 +70,24 @@
     <servlet-name>echolocal</servlet-name>
     <url-pattern>/echolocal</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Echoreply</display-name>
+    <servlet-name>Echoreply</servlet-name>
+    <servlet-class>Gestionnaire.Echoreply</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Echoreply</servlet-name>
+    <url-pattern>/Echoreply</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Verify</display-name>
+    <servlet-name>Verify</servlet-name>
+    <servlet-class>Gestionnaire.Verify</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Verify</servlet-name>
+    <url-pattern>/Verify</url-pattern>
+  </servlet-mapping>
 </web-app>

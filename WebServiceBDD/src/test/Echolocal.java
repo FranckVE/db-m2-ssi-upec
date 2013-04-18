@@ -1,4 +1,4 @@
-package Gestionnaire;
+package test;
 
 import java.io.IOException;
 
@@ -6,14 +6,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
+import java.net.URI;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.xml.internal.ws.api.server.Container;
+
 /**
  * Servlet implementation class echolocal
  */
@@ -62,9 +73,17 @@ public class Echolocal{
 
 
    return "login =" +log +"   cle = "+cle;
+   
+//	Client c = Client.create();
+//  String repurl = "http://wsbdd-projetcdai.rhcloud.com/WebService/rest/echotest?login="+log+"&pubKey="+cle;
+//  WebResource resource = c.resource(repurl);
+//  String response = resource.get(String.class);
+//	return response;
+   
 
    //return "Hello Jersey in plain text";
    }
+   	
 
    // This method is called if request is HTML
 //   @GET

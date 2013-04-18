@@ -1,4 +1,4 @@
-package Gestionnaire;
+package test;
 
 public class Main {
 
