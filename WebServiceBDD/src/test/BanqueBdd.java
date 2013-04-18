@@ -5,19 +5,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.servlet.ServletContext;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
-
-import com.google.gson.Gson;
+import java.util.ArrayList;
 
 public class BanqueBdd {
 
 	public BanqueBdd() {
-		Gson gson = new Gson();
-		gson.toJson(1);
-		System.out.println(gson);
+
 	}
 
 	/**
@@ -46,13 +39,13 @@ public class BanqueBdd {
 					passe = true;
 				}
 				if (!passe)
-					return "rejet";
+					return null;
 			} catch (Exception e) {
-				return "rejet";
+				return null;
 			}
 
 		} catch (SQLException | ClassNotFoundException e1) {
-			return e1.getLocalizedMessage();
+			//return e1.getLocalizedMessage();
 		}
 
 		return listComptes;
