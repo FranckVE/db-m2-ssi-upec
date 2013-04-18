@@ -90,4 +90,14 @@
     <servlet-name>BanqueBdd</servlet-name>
     <url-pattern>/BanqueBdd</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Main</display-name>
+    <servlet-name>Main</servlet-name>
+    <servlet-class>Gestionnaire.Main</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/Main</url-pattern>
+  </servlet-mapping>
 </web-app>
