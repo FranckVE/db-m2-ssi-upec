@@ -5,10 +5,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContext;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Servlet implementation class Main
  */
+@Path("/Main")
 public class Main extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -17,7 +26,7 @@ public class Main extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-	@Path("/Main")
+
     public Main() {
         super();
         Engine engine = new Engine();
@@ -26,7 +35,7 @@ public class Main extends HttpServlet {
 	@GET
 	@Produces( MediaType.TEXT_PLAIN )
 	public String sayPlainTextHello(@DefaultValue("error") @QueryParam("cipher") String cipher){
-		
+		return "";
 	}
 
 
