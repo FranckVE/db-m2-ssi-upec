@@ -14,7 +14,7 @@
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>Gestionnaire</param-value>
+      <param-value>engine</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -24,13 +24,13 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>Helloworldbdd</display-name>
-    <servlet-name>Helloworldbdd</servlet-name>
-    <servlet-class>Gestionnaire.Helloworldbdd</servlet-class>
+    <display-name>Main</display-name>
+    <servlet-name>Main</servlet-name>
+    <servlet-class>engine.Main</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Helloworldbdd</servlet-name>
-    <url-pattern>/Helloworldbdd</url-pattern>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/Main</url-pattern>
   </servlet-mapping>
   <resource-ref>
     <description>
@@ -42,62 +42,12 @@
   </resource-ref>
   <servlet>
     <description></description>
-    <display-name>Connexionbdd</display-name>
-    <servlet-name>Connexionbdd</servlet-name>
-    <servlet-class>Gestionnaire.Connexionbdd</servlet-class>
+    <display-name>Echotest</display-name>
+    <servlet-name>Echotest</servlet-name>
+    <servlet-class>engine.Echotest</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Connexionbdd</servlet-name>
-    <url-pattern>/Connexionbdd</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>ConnexionIP</display-name>
-    <servlet-name>ConnexionIP</servlet-name>
-    <servlet-class>Gestionnaire.ConnexionIP</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ConnexionIP</servlet-name>
-    <url-pattern>/ConnexionIP</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>echolocal</display-name>
-    <servlet-name>echolocal</servlet-name>
-    <servlet-class>Gestionnaire.echolocal</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>echolocal</servlet-name>
-    <url-pattern>/echolocal</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>Echoreply</display-name>
-    <servlet-name>Echoreply</servlet-name>
-    <servlet-class>Gestionnaire.Echoreply</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Echoreply</servlet-name>
-    <url-pattern>/Echoreply</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>BanqueBdd</display-name>
-    <servlet-name>BanqueBdd</servlet-name>
-    <servlet-class>test.BanqueBdd</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>BanqueBdd</servlet-name>
-    <url-pattern>/BanqueBdd</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>Main</display-name>
-    <servlet-name>Main</servlet-name>
-    <servlet-class>Gestionnaire.Main</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Main</servlet-name>
-    <url-pattern>/Main</url-pattern>
+    <servlet-name>Echotest</servlet-name>
+    <url-pattern>/Echotest</url-pattern>
   </servlet-mapping>
 </web-app>
