@@ -1,7 +1,5 @@
 package engine;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.sql.*;
 
@@ -16,16 +14,11 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
 
 import org.bouncycastle.util.encoders.Base64;
 
-/**
- * Servlet implementation class Verify
- */
 public class Engine {
 
 	private Statement state = null;
@@ -45,23 +38,17 @@ public class Engine {
 	}
 
 	public RSAPublicKey verifBanque(String nom_banque, String hash) {
-		PublicKey cle_pub = null;
 		String id_banque = null;
 		PublicKey pubKey = null;
 
-		String query = "SELECT * FROM banques WHERE nom ='" + nom_banque + "'";
 		try {
-			ResultSet resultat = state.executeQuery(query);
-
-			boolean passe = false;
-			// we wait for one answer
+			ResultSet resultat = state.executeQuery("SELECT * FROM `banques` WHERE nom='" + nom_banque + "'");
 			while (resultat.next()) {
 				pubKey = Engine.getPublicKeyBase64(resultat.getString("pubKey"));
 				id_banque = resultat.getString("id");
-				passe = true;
 			}
-			if(!passe) return null;
 		} catch (Exception e) {
+			System.out.println("Erreur dans verify banque : "+e.getMessage() +"\n"+e.getLocalizedMessage());
 			return null;
 		}
 		
@@ -71,32 +58,21 @@ public class Engine {
 		return (RSAPublicKey)pubKey;
 	}
 
-	public boolean verifUser(String login, String mdp, String hash) {
-		String result = "OK";
-		PublicKey pubKey = null;
+	public boolean verifUser(String login, String mdp, String hash) throws Exception {
+		RSAPublicKey pubKey = null;
 
 		// Premier test de login / mdp
-		String query = "SELECT * FROM credentials WHERE login ='" + login
-				+ "' and mdp ='" + mdp + "'";
+		String query = "SELECT * FROM `credentials` WHERE login='" + login+ "' and mdp='" + mdp + "'";
 
-		try {
-			ResultSet resultat = state.executeQuery(query);
-			boolean passe = false;
-
-			while (resultat.next()) {
-				pubKey = Engine.getPublicKeyBase64(resultat.getString("pubKey"));
-				passe = true;
-			}
-			if (!passe)
-				return false;
-		} catch (Exception e) {
-			return false;
+		ResultSet resultat = state.executeQuery(query);
+		if(resultat.next()) {
+			pubKey = (RSAPublicKey) Engine.getPublicKeyBase64(resultat.getString("pubKey"));
+			return true;
 		}
-
+			
 		// Vérification du ID et de son hash
-//		if (CryptoUtils.verify(mdp, hash, pubKey))
-//			return "OK";
-		return true;
+//		if (CryptoUtils.verify(mdp, hash, pubKey)) return true;
+		return false;
 	}
 
 	// Génère une clé de session
@@ -111,36 +87,25 @@ public class Engine {
 	//
 	// ******************************************************************************
 	
-	public byte[][] receiveChallenge (String chaine_recu){
+	public byte[][] receiveChallenge (String chaine_recu) throws Exception {
 		
-		byte []  chaine = Base64.decode(chaine_recu);
-		
-		//RSAPrivateKey privKey = (RSAPrivateKey) CryptoUtils.loadPrivateKey(path, "RSA");
-		RSAPrivateKey privKey = null;
-		String query = "SELECT * FROM keys WHERE nom = 'private'";
-		try {
-			ResultSet resultat = state.executeQuery(query);
+		// Les + sont transformés en espace !! Il faut les remettre dans la chaine envoyée
+		byte []  chaine = Base64.decode(chaine_recu.replaceAll(" ", "+"));
 
-			boolean passe = false;
-			// we wait for one answer
-			while (resultat.next()) {
-				privKey = (RSAPrivateKey) Engine.getPrivateKeyBase64(resultat.getString("key"));
-				passe = true;
-			}
-			if(!passe) return null;
-		} catch (Exception e) {
-			return null;
+		RSAPrivateKey privKey = null;
+		ResultSet resultat = state.executeQuery("SELECT * FROM `keys` WHERE nom='private'");
+		while (resultat.next()) {
+			privKey = (RSAPrivateKey) Engine.getPrivateKeyBase64(resultat.getString("key"));
 		}
 		
 		byte[] dec = CryptoUtils.adecRSA(chaine, privKey);
-		
+		if(dec == null) return null;
 		byte deconc [][] = CryptoUtils.deconcat(new String(dec));
-		
 		
 		return deconc;
 	}
 	
-	public String sendSessionKey (byte[] Ksession,RSAPublicKey pubKey){
+	public String sendSessionKey (SecretKey sessionKey, RSAPublicKey pubKey){
 		
 		long time_l =  System.currentTimeMillis();
 		byte [] time = ByteBuffer.allocate(8).putLong(time_l).array();
@@ -148,7 +113,7 @@ public class Engine {
 		
 		byte [][] tab = new byte [2][];
 		tab [0] = time;
-		tab [1] = Ksession;
+		tab [1] = sessionKey.getEncoded();
 		
 		String chaine_concat = CryptoUtils.concat(tab);
 		
@@ -158,16 +123,14 @@ public class Engine {
 			 System.out.println("sendSessionKey : --> "+new String(enc));
 			 System.out.println("sendSessionKey (time) : --> "+new String(time));
 			return new String(Base64.encode(enc));
-		} catch (NoSuchProviderException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			return e.getMessage();
 		}
-
-		return null;
 	}
 	
 	public byte[][] receiveLoginPassword (String chaine_recu,SecretKey Ksession){
 
-		byte [] chaine = Base64.decode(chaine_recu);
+		byte [] chaine = Base64.decode(chaine_recu.replaceAll(" ", "+"));
 		
 		byte[] dec = CryptoUtils.decAES128(chaine, Ksession);
 		byte deconc [][] = CryptoUtils.deconcat(new String(dec));
@@ -238,27 +201,19 @@ public class Engine {
 		return pk;
 	}
 	
-	public static PrivateKey getPrivateKeyBase64(String keyBase64) {
+	public static PrivateKey getPrivateKeyBase64(String keyBase64) throws Exception {
 
 		byte[] keyEncoded = Base64.decode(keyBase64.getBytes());
 		return getPrivateKeyEncoded(keyEncoded);
 	}
 	
-	private static PrivateKey getPrivateKeyEncoded(byte[] encodedPrivateKey) {
+	private static PrivateKey getPrivateKeyEncoded(byte[] encodedPrivateKey) throws Exception {
 		PrivateKey privateKey = null;
-		try {
 
-			// Generate KeyPair.
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(
-					encodedPrivateKey);
-			privateKey = keyFactory.generatePrivate(privateKeySpec);
-			return privateKey;
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException ex) {
-			Logger.getLogger(CryptoUtils.class.getName()).log(Level.SEVERE,
-					null, ex);
-		}
-
+		// Generate KeyPair.
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
+		privateKey = keyFactory.generatePrivate(privateKeySpec);
 		return privateKey;
 	}
 }

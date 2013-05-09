@@ -20,12 +20,11 @@ import javax.ws.rs.core.MediaType;
 public class Main extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-	private Engine engine;
-	private SecretKey sessionKey;
+	private Engine engine = new Engine();
+	
 
     public Main() {
         super();
-        engine = new Engine();
     }
     
     @Context
@@ -39,14 +38,25 @@ public class Main extends HttpServlet {
 		// Premier échange : pour générer la clé de session
 		if(!cipher.equals("error") && id.equals("1")) {
 
-			byte[][] temp = engine.receiveChallenge(cipher);
+			byte[][] temp;
+			try {
+				temp = engine.receiveChallenge(cipher);
+			} catch (Exception e) {
+				return "Erreur : " + e.getMessage() + "\nAutre code : "+ e.toString();
+			}
+			
 			String nomBanque = new String(temp[1]);
 			String hash = new String(temp[2]);
+			System.out.println("Valeurs récup : \nNom banque : "+nomBanque+" - Hash : "+hash);
 			
 			RSAPublicKey pubKey = engine.verifBanque(nomBanque, hash);
 			if(pubKey != null) {
-				sessionKey = engine.sessionKeyGenerator();
-				return engine.sendSessionKey(sessionKey.getEncoded(), pubKey);
+				SecretKey sessionKey = engine.sessionKeyGenerator();
+				if(sessionKey == null) return "Erreur de gen sessionKey";
+				
+				// Ajout de la clé de session dans properties pour persistence
+				System.getProperties().put("key", sessionKey);
+				return engine.sendSessionKey(sessionKey, pubKey);
 			}
 			return "null";
 		} 
@@ -54,17 +64,25 @@ public class Main extends HttpServlet {
 		// Second échange : données d'authentification du client
 		else if(!cipher.equals("error") && id.equals("2")) {
 			
+			// Récupération de la clé de session enregistrée dans les properties
+			SecretKey sessionKey = (SecretKey)System.getProperties().remove("key");
 			byte[][] temp = engine.receiveLoginPassword(cipher, sessionKey);
 			String login = new String(temp[0]);
 			String mdp = new String(temp[1]);
+//			String hash = new String(temp[2]);
 			
-			if(engine.verifUser(login, mdp, "")) {
-				return engine.sendOK(sessionKey);
-			} else {
-				return engine.sendFalse(sessionKey);
+			try {
+				// Vérification des credentials utilisateur
+				if(engine.verifUser(login, mdp, "")) return engine.sendOK(sessionKey);
+				else return engine.sendFalse(sessionKey);
+			} catch (Exception e) {
+				return "Erreur : "+e.getMessage();
 			}
-		} else {
-			return "Error";
+		} 
+		
+		// Dernier cas
+		else {
+			return "Pas d'arguments / erreurs dans les arguments passés";
 		}
 	}
 }
